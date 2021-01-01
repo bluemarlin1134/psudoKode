@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            overflow: hidden;
+            height:100%;
+            background-color: #2b2b2b;
+          }
+        p{
+            color: white;
+            padding-left: 2%;
+        }
+        h4{
+            color: white;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        #left {
+            padding: 5%;
+            height:100%;
+            position: absolute;
+            top: 0px;
+            bottom: 0;
+            left: 0;
+            overflow-y: scroll; 
+          }
+
+        #right {
+            padding: 5%;
+            height:100%;
+            text-align: center;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            overflow-y: scroll;
+          }
+          .home {
+              padding: 5%;
+          }
+    </style>
+  </head>
+    <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const player = Plyr.setup('.js-player');
+        });
+    </script>
+  <body>
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-6" id="left">
+                    <h4>Audio Downloads (Most recent first)</h4>
+                    <br>
+                    {% for i in range(0, audio|length) %}
+                        <div style="padding-top: 5%; ">
+                            <div>
+                                <strong><p>{{audio[i]['filename']}}</p></strong>
+                                <audio id="player" controls>
+                                    <source src="/static/downloads/{{audio[i]['filename']}}" type="audio/mp3" />
+                                </audio>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="col-6" id="right">
+                    <h4>Video Downloads (Most recent first)</h4>
+                    <br>
+
+                    {% for i in range(0, video|length) %}
+                        <div style="padding-top: 4%;">
+                            <div class="card" style="width: 100%;">
+
+                                <video class="card-img-top" id="player" playsinline controls style="width: 100%;">
+                                    <source src="/static/downloads/{{video[i]['filename']}}" type="video/mp4" />
+                                </video>
+
+                                <div class="card-body" >
+                                    <strong style="max-width: 100%;" class="text-truncate">{{video[i]['filename']}}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+                <div class="container-fluid fixed-bottom home">
+                    <a href="javascript:history.back()">
+                        <button type="button" class="btn btn-outline-danger btn-lg">Back</button>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+  </body>
+</html>

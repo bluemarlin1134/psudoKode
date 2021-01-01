@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+        <style>
+           body {
+               background-color: #2b2b2b;
+           }
+           a{
+               color: white;
+           }
+           p{
+               color: white;
+               padding-left: 5%;
+           }
+           a:link {
+            text-decoration: none;
+            }
+            a:visited {
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: none;
+                color: white;
+            }   
+            a:active {          
+                text-decoration: none;
+            }
+            
+            h5 {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+                color: white;
+              }
+            
+            img {
+                border: 2px solid white;
+                max-width: 100%;
+
+            }
+
+            ::-webkit-scrollbar {
+                display: none;
+            }
+
+            .home{
+                padding: 5%;
+                
+            }
+        </style>
+    </head>
+    <body>
+
+        {% for i in range(0,19,3) %}
+        <div class="container-fluid pt-5">
+            <div class="row align-items-center">
+                
+                <div class="col-md-4" style="padding-left: 5%;">
+                    <a href="/video/{{term[i]['title']}}/{{term[i]['id']}}/{{term[i]['viewCount']['text']}}/{{term[i]['channel']['name']}}/{{term[i]['publishedTime']}}/1"><div class="image-size"><img class="rounded" src="{{term[i]['thumbnails'][0]['url']}}"></div></a>
+                    <h5 class="text-truncate" style="max-width: 360px;"><a href="/video/{{term[i]['title']}}/{{term[i]['id']}}/{{term[i]['viewCount']['text']}}/{{term[i]['channel']['name']}}/{{term[i]['publishedTime']}}/1">{{term[i]['title']}}</a></h5>
+                    <div class="d-flex">
+                        <strong><p class="p-1 text-truncate">{{term[i]['channel']['name']}}</p></strong>
+                        
+                        <strong><p class="p-1 text-truncate">{{term[i]['publishedTime']}}</p></strong>
+                        <p class="p-1 ">{{term[i]['duration']}}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4" style="padding-left: 3%;">
+                    <a href="/video/{{term[i+1]['title']}}/{{term[i+1]['id']}}/{{term[i]['viewCount']['text']}}/{{term[i+1]['channel']['name']}}/{{term[i+1]['publishedTime']}}/1"><div class="image-size"><img class="rounded" src="{{term[i+1]['thumbnails'][0]['url']}}"></div></a>
+                    <h5 class="text-truncate" style="max-width: 360px;"><a href="/video/{{term[i+1]['title']}}/{{term[i+1]['id']}}/{{term[i]['viewCount']['text']}}/{{term[i+1]['channel']['name']}}/{{term[i+1]['publishedTime']}}/1">{{term[i+1]['title']}}</a></h5>
+                    <div class="d-flex" style="max-width:100%;">
+                        <strong><p class="p-1 text-truncate">{{term[i+1]['channel']['name']}}</p></strong>
+                        
+                        <strong><p class="p-1 text-truncate">{{term[i+1]['publishedTime']}}</p></strong>
+                        <p class="p-1 ">{{term[i+1]['duration']}}</p>
+                    </div>
+                </div>
+                {% if term[i+2]['title'] == ""%}
+                    <div class="col-md-3" style="text-align: center; ">
+                        
+                        <a href="/">
+                            <div>
+                                <strong><h3 style="color:white">Back Home</h3></strong>
+                            </div>
+                        </a>
+                    </div>
+                {% else %}
+                <div class="col-md-3">
+                    <a href="/video/{{term[i+2]['title']}}/{{term[i+2]['id']}}/{{term[i]['viewCount']['text']}}/{{term[i+2]['channel']['name']}}/{{term[i+2]['publishedTime']}}/1"><div class="image-size"><img class="rounded" src="{{term[i+2]['thumbnails'][0]['url']}}"></div></a>
+                    <h5 class="text-truncate" style="max-width: 360px;"><a href="/video/{{term[i+2]['title']}}/{{term[i+2]['id']}}/{{term[i]['viewCount']['text']}}/{{term[i+2]['channel']['name']}}/{{term[i+2]['publishedTime']}}/1">{{term[i+2]['title']}}</a></h5>
+                    <div class="d-flex">
+                        <strong><p class="p-1 text-truncate">{{term[i+2]['channel']['name']}}</p></strong>
+                        
+                        <strong><p class="p-1 text-truncate">{{term[i+2]['publishedTime']}}</p></strong>
+                        <p class="p-1">{{term[i]['duration']}}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        <div class="container-fluid fixed-bottom home">
+                <a href="javascript:history.back()">
+                    <button type="button" class="btn btn-danger btn-lg" style="border: 3px solid black;">Home</button>
+            </a>
+        </div>
+    </body>
+    <!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+</html>
+
