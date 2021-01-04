@@ -6,7 +6,7 @@ import time
 import youtube_dl
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
+import sqlite3
 
 app = Flask(__name__)
 
@@ -19,15 +19,16 @@ def home():
         return render_template('home.html')
 
 @app.route('/search/')
-@app.route('/search/<term>/<int:page>')
+@app.route('/search/<term>/<int:page>', methods = ['POST', 'GET'])
 def search( term, page):
     videos = VideosSearch(term, limit = 20, language = 'en', region = 'US')
     for i in range(0, int(page)):
         videos.next()
 
+    SER = term
     results_dict = videos.result(mode = ResultMode.dict)
     results = results_dict['result']
-    print(results)
+
     term = results
     for i in range(0,19,3):
         try:
@@ -39,8 +40,9 @@ def search( term, page):
         except IndexError:
             pass
 
-    my_dict = {"title":"", "thumbnails":"", "channel":"", "viewCount":"", "publishedTime":"", "id":""}
+    my_dict = {"title":"", "thumbnails":["",""], "channel":"", "viewCount":"", "publishedTime":"", "id":"", "search":SER}
     term.append(my_dict)
+    #return jsonify(term)
     return render_template('search.html', term = term, page=page)
 
 @app.route('/video/')
@@ -86,8 +88,7 @@ def downloads():
         else:
             dict = {"filename":p.name, "path":path+f}
             video.append(dict) 
-    print(video)
-    print(audio)
+
     return render_template('downloads.html', video=video, audio=audio)
 
 @app.route('/suggest/')
@@ -101,43 +102,67 @@ def suges(id):
 
 
     def getrecondmendations(id):
-        driver.get(f"https://www.youtube.com/watch?v={id}")
-        time.sleep(5)
-        links = []
-        for a in driver.find_elements_by_xpath('.//a'):
-            if "watch?v=" in str(a.get_attribute('href')):
-                links.append(str(a.get_attribute('href')))
+        path = '/home/william/Projects/Myroku/backend/'
+        files = os.listdir(path)
 
-        for l in links:
-            if "start_radio" in l:
-                inde =links.index(l)
-                del links[inde]
-                print(inde)
+        if f"{id}.json" in files:
+            data=open(f"{id}.json",)
+            inf = data
+            info = json.load(inf)
+            data.close()
+            return info
+        else:
+            driver.get(f"https://www.youtube.com/watch?v={id}")
+            time.sleep(5)
+            links = []
+            for a in driver.find_elements_by_xpath('.//a'):
+                if "watch?v=" in str(a.get_attribute('href')):
+                    links.append(str(a.get_attribute('href')))
 
-        for l in links:
-            if "start_radio" in l:
-                inde =links.index(l)
-                del links[inde]
-                print(inde)
+            for l in links:
+                if "start_radio" in l:
+                    inde =links.index(l)
+                    del links[inde]
 
-        links = list(set(links)) 
-        driver.quit()
+            for l in links:
+                if "start_radio" in l:
+                    inde =links.index(l)
+                    del links[inde]
 
-        info = []
-        for l in links:
-            y = youtube_dl.YoutubeDL({'outtmpl': '%(id)s.%(ext)s'})
-            result = y.extract_info(l, download=False)
-            print(result)
-            if 'entries' in result:
+            links = list(set(links)) 
+            driver.quit()
+
+            info = []
+            del links[20:]
+            for l in links:
+
+                try:
+                    download = False 
+                    ydl_opts = {
+                        'noplaylist': True
+                    }
+                    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                        result = ydl.extract_info(l, download)
+
+                    if 'entries' in result:
+                        pass
+                    else:
+                        video = result
+                        info.append({'title':video['title'], 'id':video['id'], 'thumbnails':video['thumbnails'], 'viewCount':video['view_count'], 'channel':video['uploader'], 'publishTime':video[ 'upload_date']})
+                except Exception:
+                    pass
+
+            if len(info)%2==0:
                 pass
             else:
-                video = result
-            info.append({'title':video['title'], 'id':video['id'], 'thumbnails':video['thumbnails'], 'viewCount':video['view_count'], 'channel':video['uploader'], 'publishTime':video[ 'upload_date']})
-        
-        if len(info)%2==0:
-            pass
-        else:
-            info.append({'title':"", 'id':"", 'thumbnails':"", 'viewCount':"", 'channel':""})
-        return info
-
+                info.append({'title':"", 'id':"", 'thumbnails':["", "", ""], 'viewCount':"", 'channel':""})
+            
+            with open(f"{id}.json", 'w+') as fp:
+                json.dump(info, fp)
+            return info
+    #return jsonify(getrecondmendations(id))
     return render_template('suggest.html', suggest=getrecondmendations(id))
+
+@app.route('/history/')
+def history():
+    print("history")
