@@ -30,15 +30,10 @@ def search( term, page):
     results = results_dict['result']
 
     term = results
-    for i in range(0,19,3):
-        try:
-            term[i]['title']
-        except IndexError:
-            pass
-        try:
-            term[i+1]['title']
-        except IndexError:
-            pass
+    for t in term:
+        remove = ['/', '\\', '(', ')', '?']
+        for value in remove:
+            t['title'] = t['title'].replace(value, '')
 
     my_dict = {"title":"", "thumbnails":["",""], "channel":"", "viewCount":"", "publishedTime":"", "id":"", "search":SER}
     term.append(my_dict)
@@ -102,11 +97,12 @@ def suges(id):
 
 
     def getrecondmendations(id):
-        path = '/home/william/Projects/Myroku/backend/'
+        os.system("mv ./*.json ~/Projects/Myroku/backend/static/recon-cache")
+        path = '/home/william/Projects/Myroku/backend/static/recon-cache'
         files = os.listdir(path)
 
         if f"{id}.json" in files:
-            data=open(f"{id}.json",)
+            data=open(f"/home/william/Projects/Myroku/backend/static/recon-cache/{id}.json",)
             inf = data
             info = json.load(inf)
             data.close()
@@ -134,6 +130,7 @@ def suges(id):
 
             info = []
             del links[20:]
+            print(len(links))
             for l in links:
 
                 try:
@@ -148,7 +145,7 @@ def suges(id):
                         pass
                     else:
                         video = result
-                        info.append({'title':video['title'], 'id':video['id'], 'thumbnails':video['thumbnails'], 'viewCount':video['view_count'], 'channel':video['uploader'], 'publishTime':video[ 'upload_date']})
+                        info.append({'title':video['title'], 'id':video['id'], 'thumbnails':video['thumbnails'], 'viewCount':"{:,}".format(int(video['view_count'])) + " views", 'channel':video['uploader'], 'publishTime':video[ 'upload_date']})
                 except Exception:
                     pass
 
@@ -165,4 +162,24 @@ def suges(id):
 
 @app.route('/history/')
 def history():
-    print("history")
+    path = '/home/william/Projects/Myroku/backend/'
+    files = os.listdir(path)
+
+    ids = []
+    for file in files:
+        p = pathlib.Path(file)
+        if p.suffix == ".json":
+
+            ids.append(p.name.replace('.json', ''))
+    
+    print(ids)
+    return render_template('history.html')
+
+@app.route('/settings/')
+def settings():
+    return render_template('settings.html')
+
+@app.route('/background_process_test')
+def background_process_test():
+    print("Hello")
+    return "nothing"

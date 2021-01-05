@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type=text/javascript>
+
+    function myFunc() {
+        $( "#press" ).html( "Next Step..." )
+    }
+    
+</script>
+{% endblock script %}
+
+{% block style %}
+{% endblock style %}
+
+{% block content %}
+<button type="button" class="btn btn-primary" onclick="myFunc()" id="press">Primary</button>
+
+{% endblock content %}

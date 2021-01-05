@@ -1,2 +1,0 @@
-# psudoKode
-a ROKU ALTERNITAVE 
